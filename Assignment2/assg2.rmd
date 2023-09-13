@@ -117,6 +117,6 @@ for (q in q_list) {
 The tails of Y are **heavier** than the tails of the Gaussian distribution.
 
 ### Plot 2
-The upper tail of Z is **heavier than Gaussian**.
+The upper tail of Z is **Gaussian**.
 
-The lower tail of Z is **Gaussian**.
+The lower tail of Z is **heavier than Gaussian**.
