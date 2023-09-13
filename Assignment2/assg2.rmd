@@ -1,0 +1,122 @@
+---
+title-meta: FINA5250 Assignment 2
+author-meta: LIU, Weiyang
+geometry: "left=1.25in,right=1.25in,top=1in,bottom=1in"
+output: pdf_document
+---
+
+# Assignment 2
+FINA 5250 Empirical Methods in Finance
+
+LIU, Weiyang
+
+[wliuax@connect.ust.hk](mailto:wliuax@connect.ust.hk)
+
+```{r setup, include = TRUE, echo = FALSE}
+# set working directory
+setwd("d:/workspace/FINA5250/Assignment2")
+```
+
+```{r, echo = FALSE}
+# estimate with normal distribution
+est_norm_params <- function(series) {
+  mean <- mean(series)
+  sd <- sd(series)
+  return(c(mean, sd))
+}
+
+# estimate with cauchy distribution
+est_cauchy_params <- function(series) {
+  m <- median(series)
+  # estimate lambda with half the interquartile range
+  lambda <- 0.5 * (quantile(series, 0.75) - quantile(series, 0.25))
+  return(c(m, lambda))
+}
+
+# compute VaR
+# method = {"emp", "norm", "cauchy"}
+VaR <- function(series, q, method = "emp") {
+  if (method == "emp") {
+    # add negative sign to make VaR positive
+    return(- quantile(series, q))
+  } else if (method == "norm") {
+    params <- est_norm_params(series)
+    return(- qnorm(q, params[1], params[2]))
+  } else if (method == "cauchy") {
+    params <- est_cauchy_params(series)
+    return(- qcauchy(q, params[1], params[2]))
+  } else {
+    cat("Invalid method of estimating VaR")
+    return(NULL)
+  }
+}
+
+ES <- function(series, q, method = "emp") {
+  if (method == "emp") {
+    # add negative sign to make ES negative
+    return(- mean(series[series < -VaR(series, q, method)]))
+  } else if (method == "norm") {
+    params <- est_norm_params(series)
+    s_norm <- rnorm(100000, params[1], params[2])
+    return(- mean(s_norm[s_norm < -VaR(s_norm, q, method)]))
+  } else if (method == "cauchy") {
+    params <- est_cauchy_params(series)
+    s_cauchy <- rcauchy(100000, params[1], params[2])
+    return(- mean(s_cauchy[s_cauchy < -VaR(s_cauchy, q, method)]))
+  } else {
+    cat("Invalid method of estimating ES")
+    return(NULL)
+  }
+}
+```
+
+## Question 1
+
+```{r, echo = FALSE}
+# load data
+DHSI <- read.table("DHSI-1.csv", header = TRUE, sep = ",")
+# extract date
+DHSI_date <- strptime(DHSI$Date, format = "%Y/%m/%d")
+# extract daily close price
+DHSI_close <- DHSI$Close
+# compute log returns
+DHSILR <- diff(log(DHSI_close))
+```
+
+### 1.1
+Compute VaR and expected shortfall under normal assumption for q = 0.01 and 0.001.
+```{r, echo = FALSE}
+q_list <- c(0.01, 0.001)
+for (q in q_list) {
+  cat(sprintf("VaR(q=%s) = %s\n", q, VaR(DHSILR, q, "norm")))
+  cat(sprintf("ES(q=%s) = %s\n", q, ES(DHSILR, q, "norm")))
+}
+```
+
+### 1.2
+```{r, echo = FALSE}
+par(mfrow = c(1,1))
+qqnorm(DHSILR, main = "Empirical QQ plot for DHSILR vs N(0,1)",
+       xlab = "N(0,1) quantitles", ylab = "DHSILR quantiles")
+```
+The distribution of log returns has a heavier tail than normal distribution.
+
+### 1.3
+Compute empirical VaR and empirical expected shortfall for q = 0.01 and 0.001.
+```{r, echo = FALSE}
+q_list <- c(0.01, 0.001)
+for (q in q_list) {
+  cat(sprintf("VaR(q=%s) = %s\n", q, VaR(DHSILR, q, "emp")))
+  cat(sprintf("ES(q=%s) = %s\n", q, ES(DHSILR, q, "emp")))
+}
+```
+
+## Question 2
+
+### Plot 1
+The tails of Y are **heavier** than the tails of the Gaussian distribution.
+
+### Plot 2
+The upper tail of Z is **heavier than Gaussian**.
+
+The lower tail of Z is **Gaussian**.
