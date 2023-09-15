@@ -54,8 +54,6 @@ ES <- function(series, q, method = "emp") {
 
 # load data
 DHSI <- read.table("DHSI-1.csv", header = TRUE, sep = ",")
-# extract date
-DHSI_date <- strptime(DHSI$Date, format = "%Y/%m/%d")
 # extract daily close price
 DHSI_close <- DHSI$Close
 # compute log returns
