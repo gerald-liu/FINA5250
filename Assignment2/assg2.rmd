@@ -57,11 +57,11 @@ ES <- function(series, q, method = "emp") {
     return(- mean(series[series < -VaR(series, q, method)]))
   } else if (method == "norm") {
     params <- est_norm_params(series)
-    s_norm <- rnorm(100000, params[1], params[2])
+    s_norm <- rnorm(1000 / q, params[1], params[2])
     return(- mean(s_norm[s_norm < -VaR(s_norm, q, method)]))
   } else if (method == "cauchy") {
     params <- est_cauchy_params(series)
-    s_cauchy <- rcauchy(100000, params[1], params[2])
+    s_cauchy <- rcauchy(1000 / q, params[1], params[2])
     return(- mean(s_cauchy[s_cauchy < -VaR(s_cauchy, q, method)]))
   } else {
     cat("Invalid method of estimating ES")
