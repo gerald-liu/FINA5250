@@ -111,6 +111,9 @@ for (q in q_list) {
 }
 ```
 
+### 1.4
+The normal model **underestimates** the risk.
+
 ## Question 2
 
 ### Plot 1
