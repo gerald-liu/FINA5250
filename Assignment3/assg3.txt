@@ -1,0 +1,58 @@
+# set working directory
+setwd("d:/workspace/FINA5250/Assignment3")
+# remove all objects from the current workspace
+rm(list = ls())
+
+# load data
+goog <- read.table("Google.csv", sep = ",", header = TRUE)
+
+lm_1 <- lm(rGoog_ex ~ rM_ex, data = goog)
+summary(lm_1)
+
+beta_summary <- summary(lm_1)$coefficients["rM_ex", ]
+beta_lo <- beta_summary[1] - 2 * beta_summary[2]
+beta_hi <- beta_summary[1] + 2 * beta_summary[2]
+cat(sprintf("Lower bound: %s\n", beta_lo))
+cat(sprintf("Upper bound: %s\n", beta_hi))
+if (beta_lo > 1 || beta_hi < 1) {
+  cat("The confidence interval doesn't include 1\n")
+} else {
+  cat("The confidence interval includes 1\n")
+}
+
+lm_3 <- lm(rGoog_ex ~ rM_ex + rSmB + rHmL, data = goog)
+summary(lm_3)
+
+cat(sprintf("The single factor can explain %.2f%% of the variation\n",
+            summary(lm_1)$r.squared * 100))
+
+cat(sprintf("The three factors can explain %.2f%% of the variation\n",
+            summary(lm_3)$r.squared * 100))
+
+anova(lm_1, lm_3)
+
+goog_train <- head(goog, 100)
+goog_test <- tail(goog, 75)
+
+lm_1_train <- lm(rGoog_ex ~ rM_ex, data = goog_train)
+summary(lm_1_train)
+
+lm_3_train <- lm(rGoog_ex ~ rM_ex + rSmB + rHmL, data = goog_train)
+summary(lm_3_train)
+
+y_pred_1 <- predict.lm(lm_1_train, newdata = goog_test)
+y_pred_3 <- predict.lm(lm_3_train, newdata = goog_test)
+
+mean_y_train <- mean(goog_train$rGoog_ex)
+
+rsquared_test <- function(y, y_pred, mean_y_train){
+  sse <- sum((y_pred - y)^2)
+  tss <- sum((y - mean_y_train)^2)
+  return(1 - sse / tss)
+}
+
+cat(sprintf("Out-of-sample R-squared of the single-factor model is %s\n",
+            rsquared_test(goog_test$rGoog_ex, y_pred_1, mean_y_train)))
+
+cat(sprintf("Out-of-sample R-squared of the three-factor model is %s\n",
+            rsquared_test(goog_test$rGoog_ex, y_pred_3, mean_y_train)))
