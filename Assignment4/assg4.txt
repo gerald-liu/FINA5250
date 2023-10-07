@@ -1,0 +1,54 @@
+# set working directory
+setwd("d:/workspace/FINA5250/Assignment4")
+# remove all objects from the current workspace
+rm(list = ls())
+
+cov_matrix <- function(sd_m, betas, taus = numeric()) {
+  n <- length(betas)
+  if (length(taus) == 0) {
+    taus <- numeric(length = n)
+  } else if (length(taus) != n) {
+    cat("Error: Number of betas and taus do not match.\n")
+    return(NA)
+  }
+
+  cm <- matrix(nrow = n, ncol = n)
+  for (i in seq_len(n)) {
+    for (j in seq_len(n)) {
+      cm[i, j] <- betas[i] * betas[j] * sd_m**2
+      if (i == j) {
+        cm[i, j] <- cm[i, j] + taus[i]**2
+      }
+    }
+  }
+
+  return(cm)
+}
+
+sd_m <- 0.02
+betas <- c(0.5, 1.5, 1.2)
+
+cm <- cov_matrix(sd_m, betas)
+print(cm)
+
+- qnorm(0.01) * sqrt(cm[2, 2])
+
+w <- c(0.5, 0.25, 0.25)
+var_p <- t(w) %*% cm %*% w
+- qnorm(0.01) * sqrt(var_p)[, ]
+
+(t(betas) %*% w)[, ]
+
+data <- read.table("Assignment4_Q2.csv", sep = ",", header = TRUE)
+ret <- diff(log(as.matrix(data[c("DJI", "Gold", "USD.JPY")])))
+ret_means <- colMeans(ret)
+ret_cov <- cov(ret)
+
+w <- rep(1 / 3, times = 3)
+p_mean <- (ret_means %*% w)[, ]
+p_var <- t(w) %*% ret_cov %*% w
+p_sd <- sqrt(p_var)[, ]
+
+- qnorm(0.01, p_mean, p_sd)
+
+- qnorm(0.01, ret_means[1], sqrt(ret_cov[1, 1]))

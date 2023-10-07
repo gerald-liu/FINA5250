@@ -1,4 +1,4 @@
-assg_no <- 3
+assg_no <- 4
 wd <- sprintf("D:/workspace/FINA5250/Assignment%s", assg_no)
 
 knitr::purl(input = sprintf("%s/assg%s.rmd", wd, assg_no),
