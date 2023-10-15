@@ -24,6 +24,9 @@ library(moments)
 # load data
 hsi_data <- read.table("Assignment5.csv", sep = ",", header = TRUE)
 hsi_lr <- diff(log(hsi_data$Close))
+
+mean_lr <- mean(hsi_lr)
+sd_lr <- sd(hsi_lr)
 ```
 
 ## Stylized Fact 1
@@ -52,6 +55,10 @@ abline(h = 2 * 1 / sqrt(n), lty = 2)
 ```{r echo = FALSE}
 hist(hsi_lr, breaks = 50, freq = FALSE,
      main = "Histogram of HSILR vs Fitted Normal Density")
+
+x_norm <- seq(-0.2, 0.2, by = 0.001)
+y_norm <- dnorm(x_norm, mean = mean_lr, sd = sd_lr)
+points(x_norm, y_norm, type = "l", col = "red")
 ```
 ```{r echo = FALSE}
 qqnorm(hsi_lr)
@@ -75,8 +82,6 @@ This is demonstrated by the previous histogram as well. Numerically, the negativ
 **The standard deviation of returns completely dominates the mean of returns at short horizons such as daily.**
 
 ```{r echo = FALSE}
-mean_lr <- mean(hsi_lr)
-sd_lr <- sd(hsi_lr)
 cat(sprintf("Mean of HSILR: %s", mean_lr))
 cat(sprintf("Standard deviation of HSILR: %s", sd_lr))
 ```
