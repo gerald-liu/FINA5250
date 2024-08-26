@@ -1,5 +1,6 @@
 # set working directory
-setwd(utils::getSrcDirectory(function() {}))
+dir <- "D:/workspace/FINA5250/Assignment1"
+setwd(dir)
 # load data
 DHSI <- read.table("DHSI.csv", header = TRUE, sep = ",")
 # extract date
