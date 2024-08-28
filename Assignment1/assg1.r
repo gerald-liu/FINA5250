@@ -11,10 +11,10 @@ HSI <- DHSI$Close
 DHSILR <- diff(log(HSI))
 
 # create output file
-title <- "Assg1"
-author <- "LIU_Weiyang"
+title <- "assg1"
+# author <- "Gerald_Liu"
 
-pdf(paste(title, "_output_", author, ".pdf", sep = ""))
+pdf(paste(title, ".pdf", sep = ""))
 
 # draw time series plots of the index “HSI” and the log returns “DHSILR”
 par(mfrow = c(2, 1))
@@ -46,6 +46,7 @@ curve(dnorm(x, mean = mean(DHSILR), sd = sd(DHSILR)), col = "red", add = TRUE)
 dev.off()
 
 # save as txt
-src_filename <- utils::getSrcFilename(function() {})
-out_filename <- paste(title, "_code_", author, ".txt", sep = "")
+src_filename <- "assg1.r"
+# out_filename <- paste(title, "_code_", author, ".txt", sep = "")
+out_filename <- paste(title, ".txt", sep = "")
 file.copy(src_filename, out_filename)

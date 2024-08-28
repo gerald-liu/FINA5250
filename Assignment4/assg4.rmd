@@ -1,6 +1,6 @@
 ---
 title-meta: FINA5250 Assignment 4
-author-meta: LIU, Weiyang
+author-meta: Gerald Liu
 geometry: "left=1.25in,right=1.25in,top=1in,bottom=1in"
 output: pdf_document
 ---
@@ -8,9 +8,9 @@ output: pdf_document
 # Assignment 4
 FINA 5250 Empirical Methods in Finance
 
-LIU, Weiyang
+Gerald Liu
 
-[wliuax@connect.ust.hk](mailto:wliuax@connect.ust.hk)
+[geraldwliu@gmail.com](mailto:geraldwliu@gmail.com)
 
 ```{r setup, include = TRUE, echo = FALSE}
 # set working directory
